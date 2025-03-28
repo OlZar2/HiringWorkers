@@ -1,6 +1,8 @@
 using HW.Application;
 using HW.Jwt;
 using HW.Persistence;
+using HW.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
