@@ -4,5 +4,7 @@ namespace HW.Core.Stores;
 
 public interface IAccountStore
 {
-    public Task<Account> GetByEmailAsync(string email);
+    Task<Account> GetByEmailAsync(string email);
+
+    Task<bool> ExistsByEmailAsync(string email);
 }

@@ -21,7 +21,7 @@ public class Email : ValueObject
             throw new ArgumentException("Email не может быть пустым");
 
         if (!EmailRegex.IsMatch(email))
-            throw new ArgumentException("Невенрый формат email");
+            throw new ArgumentException("Неверный формат email");
 
         return new Email(email);
     }

@@ -23,4 +23,10 @@ public class AccountRepository : IAccountStore
 
         return account;
     }
+
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        return await _context.Accounts
+            .AnyAsync(a => a.Email.Value == email);
+    }
 }

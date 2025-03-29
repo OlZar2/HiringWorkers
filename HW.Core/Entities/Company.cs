@@ -11,36 +11,27 @@ public class Company : Account
     private Company(
         Email email,
         PhoneNumber phoneNumber,
-        string description,
-        string avatarPath,
         string passworHash,
         string companyName) : base(email, phoneNumber, passworHash)
     {
-        Id = Guid.NewGuid();
-        Email = email;
-        PhoneNumber = phoneNumber;
-        Description = description;
-        AvatarPath = avatarPath;
-        PasswordHash = passworHash;
         CompanyName = companyName;
     }
 
     private Company() { }
 
-    public static Company Create(
+    public static Company Register(
         Email email,
         PhoneNumber phoneNumber,
-        string description,
-        string avatarPath,
-        string passwordHash,
-        string companyName)
+        string companyName,
+        string passwordHash)
     {
+        if (passwordHash == null) throw new ArgumentException("Пароль не может быть пустым");
+        if (companyName == null) throw new ArgumentException("Название компании не может быть пустым");
+
         return new Company(
             email,
             phoneNumber,
-            description,
-            avatarPath,
-            passwordHash,
-            companyName);
+            companyName,
+            passwordHash);
     }
 }

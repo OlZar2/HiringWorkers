@@ -1,3 +1,4 @@
+using HW.API.Middlewares;
 using HW.Application;
 using HW.Jwt;
 using HW.Persistence;
@@ -17,7 +18,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+using(var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();

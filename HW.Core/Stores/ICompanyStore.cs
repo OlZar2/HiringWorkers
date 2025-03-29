@@ -4,4 +4,5 @@ namespace HW.Core.Stores;
 
 public interface ICompanyStore
 {
+    Task<Guid> CreateAsync(Company company);
 }

@@ -1,10 +1,10 @@
 ﻿using HW.Application.Interfaces;
+using HW.Application.Services.AuthLogic.Exceptions;
 using HW.Application.Services.AuthLogic.Interfaces;
 using HW.ApplicationDTOs.AuthDTOs;
 using HW.Core.Entities;
 using HW.Core.Stores;
 using HW.Core.ValueObjects;
-using System.Numerics;
 
 namespace HW.Application.Services.AuthLogic.Implementations;
 
@@ -14,20 +14,27 @@ public class AuthService : IAuthService
     private readonly IPasswordHasher _passwordHasher;
     private readonly IAccountStore _accountStore;
     private readonly IUserStore _userStore;
-    //private readonly ICompanyStore _companyStore;
+    private readonly ICompanyStore _companyStore;
 
-    public AuthService(IJwtProvider jwtProvider, IPasswordHasher passwordHasher, IUserStore userStore,
+    public AuthService(IJwtProvider jwtProvider, IPasswordHasher passwordHasher, IUserStore userStore, ICompanyStore companyStore,
         IAccountStore accountStore)
     {
         _jwtProvider = jwtProvider;
         _passwordHasher = passwordHasher;
         _userStore = userStore;
-        //_companyStore = companyStore;
+        _companyStore = companyStore;
         _accountStore = accountStore;
     }
 
     public async Task<Guid> RegisterUserAsync(UserRegisterDTO userRegisterDTO)
     {
+        var account = await _accountStore.ExistsByEmailAsync(userRegisterDTO.Email);
+
+        if (account == true)
+        {
+            throw new ExistingUserException();
+        }
+
         var emailVo = Email.Create(userRegisterDTO.Email);
         var phoneVo = PhoneNumber.Create(userRegisterDTO.PhoneNumber);
         var fullNameVo = FullName.Create(userRegisterDTO.FirstName, userRegisterDTO.SecondName, userRegisterDTO.Patronymic);
@@ -37,6 +44,26 @@ public class AuthService : IAuthService
         var user = User.Register(emailVo, phoneVo, fullNameVo, hashedPassword);
 
         var id = await _userStore.CreateAsync(user);
+        return id;
+    }
+
+    public async Task<Guid> RegisterCompanyAsync(CompanyRegisterDTO companyRegisterDTO)
+    {
+        var account = await _accountStore.ExistsByEmailAsync(companyRegisterDTO.Email);
+
+        if (account == true)
+        {
+            throw new ExistingUserException();
+        }
+
+        var emailVo = Email.Create(companyRegisterDTO.Email);
+        var phoneVo = PhoneNumber.Create(companyRegisterDTO.PhoneNumber);
+
+        var hashedPassword = _passwordHasher.GenerateHash(companyRegisterDTO.Password);
+
+        var company = Company.Register(emailVo, phoneVo, companyRegisterDTO.CompanyName, hashedPassword);
+
+        var id = await _companyStore.CreateAsync(company);
         return id;
     }
 
