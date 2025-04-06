@@ -1,4 +1,5 @@
-﻿using HW.Application.Services.AuthLogic.Exceptions;
+﻿using HW.API.Errors.Models;
+using HW.Application.Services.AuthLogic.Exceptions;
 using HW.Persistence.Repositories.Exceptions;
 using System.Text.Json;
 
@@ -40,7 +41,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (ArgumentException e)
         {
-            await WriteErrorResponse(context, StatusCodes.Status400BadRequest, e.Message);
+            await WriteErrorResponse(context, StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
@@ -48,7 +49,7 @@ public class ExceptionHandlingMiddleware
     {
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
-        var result = JsonSerializer.Serialize(new { message });
+        var result = JsonSerializer.Serialize(new SimpleErrorModel{ Message=message });
         await context.Response.WriteAsync(result);
     }
 }

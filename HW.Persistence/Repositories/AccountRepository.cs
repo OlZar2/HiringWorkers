@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HW.Persistence.Repositories;
 
-public class AccountRepository : IAccountStore
+public class AccountRepository : IAccountRepository
 {
     private readonly ApplicationDbContext _context;
 

@@ -4,7 +4,7 @@ namespace HW.Core.Entities;
 
 public class User : Account
 {
-    public FullName FullName { get; private set; }
+    public FullName FullName { get; private set; } = null!;
     public string? Description { get; private set; }
     public string? AvatarPath { get; private set; }
 
@@ -34,4 +34,11 @@ public class User : Account
             fullName,
             passwordHash);
     }
+
+    public void UpdateFullName(string firstName, string secondName, string? patronymic)
+    {
+        FullName = FullName.Create(firstName, secondName, patronymic);
+    }
+
+    public void UpdateDescription(string description) => Description = description;
 }

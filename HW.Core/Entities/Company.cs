@@ -4,7 +4,7 @@ namespace HW.Core.Entities;
 
 public class Company : Account
 {
-    public string CompanyName { get; private set; }
+    public string CompanyName { get; private set; } = null!;
     public string? Description { get; private set; }
     public string? AvatarPath { get; private set; }
 
@@ -34,4 +34,8 @@ public class Company : Account
             companyName,
             passwordHash);
     }
+
+    public void UpdateDescription(string description) => Description = description;
+    public void UpdateCompanyName(string companyName) =>
+        CompanyName = companyName ?? throw new ArgumentException("Название компании не может быть пустым");
 }

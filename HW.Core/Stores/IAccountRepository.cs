@@ -2,7 +2,7 @@
 
 namespace HW.Core.Stores;
 
-public interface IAccountStore
+public interface IAccountRepository
 {
     Task<Account> GetByEmailAsync(string email);
 

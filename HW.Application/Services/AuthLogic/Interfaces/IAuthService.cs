@@ -7,4 +7,5 @@ public interface IAuthService
     Task<Guid> RegisterUserAsync(UserRegisterDTO registerDTO);
     Task<Guid> RegisterCompanyAsync(CompanyRegisterDTO companyRegisterDTO);
     Task<string> LoginAsync(LoginDTO loginDTO);
+    bool CanChangeAccountInfo(Guid currentUserId, Guid accountId);
 }
