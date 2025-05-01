@@ -39,12 +39,108 @@ namespace HW.Persistence.Migrations
                     b.UseTptMappingStrategy();
                 });
 
+            modelBuilder.Entity("HW.Core.Entities.CandidateOrder", b =>
+                {
+                    b.Property<Guid>("CandidateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CandidateId", "OrderId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("CandidateOrder");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ExecutorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("ProfessionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ExecutorId");
+
+                    b.HasIndex("ProfessionId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Profession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RussianName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Proffesions");
+                });
+
             modelBuilder.Entity("HW.Core.Entities.Company", b =>
                 {
                     b.HasBaseType("HW.Core.Entities.Account");
 
-                    b.Property<string>("AvatarPath")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("AvatarImageId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -53,6 +149,8 @@ namespace HW.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.HasIndex("AvatarImageId");
+
                     b.ToTable("Companies", (string)null);
                 });
 
@@ -60,11 +158,13 @@ namespace HW.Persistence.Migrations
                 {
                     b.HasBaseType("HW.Core.Entities.Account");
 
-                    b.Property<string>("AvatarPath")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("AvatarImageId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.HasIndex("AvatarImageId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -114,17 +214,72 @@ namespace HW.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("HW.Core.Entities.CandidateOrder", b =>
+                {
+                    b.HasOne("HW.Core.Entities.Account", null)
+                        .WithMany()
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HW.Core.Entities.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Image", b =>
+                {
+                    b.HasOne("HW.Core.Entities.Order", null)
+                        .WithMany("Images")
+                        .HasForeignKey("OrderId");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Order", b =>
+                {
+                    b.HasOne("HW.Core.Entities.User", "Creator")
+                        .WithMany("OrdersAsCreator")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HW.Core.Entities.Account", "Executor")
+                        .WithMany("OrdersAsExecutor")
+                        .HasForeignKey("ExecutorId");
+
+                    b.HasOne("HW.Core.Entities.Profession", "Profession")
+                        .WithMany()
+                        .HasForeignKey("ProfessionId");
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Executor");
+
+                    b.Navigation("Profession");
+                });
+
             modelBuilder.Entity("HW.Core.Entities.Company", b =>
                 {
+                    b.HasOne("HW.Core.Entities.Image", "AvatarImage")
+                        .WithMany()
+                        .HasForeignKey("AvatarImageId");
+
                     b.HasOne("HW.Core.Entities.Account", null)
                         .WithOne()
                         .HasForeignKey("HW.Core.Entities.Company", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AvatarImage");
                 });
 
             modelBuilder.Entity("HW.Core.Entities.User", b =>
                 {
+                    b.HasOne("HW.Core.Entities.Image", "AvatarImage")
+                        .WithMany()
+                        .HasForeignKey("AvatarImageId");
+
                     b.HasOne("HW.Core.Entities.Account", null)
                         .WithOne()
                         .HasForeignKey("HW.Core.Entities.User", "Id")
@@ -158,8 +313,25 @@ namespace HW.Persistence.Migrations
                                 .HasForeignKey("UserId");
                         });
 
+                    b.Navigation("AvatarImage");
+
                     b.Navigation("FullName")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Account", b =>
+                {
+                    b.Navigation("OrdersAsExecutor");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.Order", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("HW.Core.Entities.User", b =>
+                {
+                    b.Navigation("OrdersAsCreator");
                 });
 #pragma warning restore 612, 618
         }

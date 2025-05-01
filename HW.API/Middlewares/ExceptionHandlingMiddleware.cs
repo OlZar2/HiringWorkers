@@ -1,5 +1,6 @@
 ﻿using HW.API.Errors.Models;
 using HW.Application.Services.AuthLogic.Exceptions;
+using HW.Application.Services.SharedLogic.Exceptions;
 using HW.Persistence.Repositories.Exceptions;
 using System.Text.Json;
 
@@ -24,28 +25,36 @@ public class ExceptionHandlingMiddleware
         {
             if (context.Request.Path.StartsWithSegments("/auth/login"))
             {
-                await WriteErrorResponse(context, StatusCodes.Status401Unauthorized, "Неверный email или пароль.");
+                await WriteErrorResponseAsync(context, StatusCodes.Status401Unauthorized, "Неверный email или пароль.");
             }
             else
             {
-                await WriteErrorResponse(context, StatusCodes.Status404NotFound, e.Message);
+                await WriteErrorResponseAsync(context, StatusCodes.Status404NotFound, e.Message);
             }
+        }
+        catch (NotEnoughRightsException e)
+        {
+            await WriteErrorResponseAsync(context, StatusCodes.Status403Forbidden, e.Message);
         }
         catch (WrongPasswordException)
         {
-            await WriteErrorResponse(context, StatusCodes.Status401Unauthorized, "Неверный email или пароль.");
+            await WriteErrorResponseAsync(context, StatusCodes.Status401Unauthorized, "Неверный email или пароль.");
         }
         catch (ExistingUserException)
         {
-            await WriteErrorResponse(context, StatusCodes.Status401Unauthorized, "Пользователь с таким email уже существует");
+            await WriteErrorResponseAsync(context, StatusCodes.Status400BadRequest, "Пользователь с таким email уже существует");
+        }
+        catch (WrongDataException e)
+        {
+            await WriteErrorResponseAsync(context, StatusCodes.Status400BadRequest, e.Message);
         }
         catch (ArgumentException e)
         {
-            await WriteErrorResponse(context, StatusCodes.Status500InternalServerError, e.Message);
+            await WriteErrorResponseAsync(context, StatusCodes.Status500InternalServerError, e.Message);
         }
     }
 
-    private async Task WriteErrorResponse(HttpContext context, int statusCode, string message)
+    private async Task WriteErrorResponseAsync(HttpContext context, int statusCode, string message)
     {
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";

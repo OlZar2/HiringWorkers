@@ -19,7 +19,16 @@ public class AccountRepository : IAccountRepository
     {
         var account = await _context.Accounts
             .Where(a => a.Email.Value == email)
-            .FirstOrDefaultAsync() ?? throw new NotFoundException("Пользователь не найден");
+            .FirstOrDefaultAsync() ?? throw new NotFoundException("Аккаунт не найден");
+
+        return account;
+    }
+
+    public async Task<Account> GetByIdAsync(Guid id)
+    {
+        var account = await _context.Accounts
+            .Where(a => a.Id == id)
+            .FirstOrDefaultAsync() ?? throw new NotFoundException("Аккаунт не найден");
 
         return account;
     }

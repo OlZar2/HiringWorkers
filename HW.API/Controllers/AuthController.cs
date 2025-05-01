@@ -1,5 +1,5 @@
 ﻿using HW.API.Errors.Models;
-using HW.API.Responses;
+using HW.API.Responses.Auth;
 using HW.Application.Services.AuthLogic.Interfaces;
 using HW.ApplicationDTOs.AuthDTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register-user")]
-    [SwaggerResponse(401, "Аккаунт уже зарегестрирован", typeof(SimpleErrorModel))]
+    [SwaggerResponse(400, "Аккаунт уже зарегестрирован", typeof(SimpleErrorModel))]
     [SwaggerResponse(400, "Ошибка валидации", typeof(HttpValidationProblemDetails))]
     [SwaggerResponse(500, "Ошибка сервера", typeof(SimpleErrorModel))]
     [SwaggerResponse(200, "Ок", typeof(UserIdResponse))]

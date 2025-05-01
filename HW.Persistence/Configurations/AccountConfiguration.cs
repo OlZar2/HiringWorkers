@@ -20,5 +20,9 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         {
             b.Property(pn => pn.Value).HasColumnName("Email");
         });
+
+        //builder.HasMany(a => a.OrdersAsCandidate)
+        //    .WithMany(o => o.Candidates)
+        //    .UsingEntity<AccountOrder>();
     }
 }

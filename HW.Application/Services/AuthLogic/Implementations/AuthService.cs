@@ -73,7 +73,17 @@ public class AuthService : IAuthService
 
         _passwordHasher.VerifyPassword(loginDTO.Password, account.PasswordHash);
 
-        var token = _jwtProvider.GenerateToken(account.Id);
+        var role = String.Empty;
+        if(account is Company)
+        {
+            role = nameof(Company);
+        }
+        if (account is User)
+        {
+            role = nameof(User);
+        }
+
+        var token = _jwtProvider.GenerateToken(account.Id, role);
         return token;
     }
 

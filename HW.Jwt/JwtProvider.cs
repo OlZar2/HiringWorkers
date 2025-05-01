@@ -17,9 +17,9 @@ public class JwtProvider : IJwtProvider
         _options = options.Value;
     }
 
-    public string GenerateToken(Guid id)
+    public string GenerateToken(Guid id, string role)
     {
-        Claim[] claims = [new(ClaimTypes.NameIdentifier, id.ToString())];
+        Claim[] claims = [new(ClaimTypes.NameIdentifier, id.ToString()), new(ClaimTypes.Role, role)];
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), SecurityAlgorithms.HmacSha256);

@@ -1,4 +1,4 @@
-﻿namespace HW.API.Responses;
+﻿namespace HW.API.Responses.Auth;
 
 public class UserIdResponse
 {

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HW.Core\HW.Core.csproj" />
+    <ProjectReference Include="..\HW.PersistenceDTO\HW.PersistenceDTO.csproj" />
   </ItemGroup>
 
 </Project>

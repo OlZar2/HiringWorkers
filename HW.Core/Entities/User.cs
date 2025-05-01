@@ -1,12 +1,19 @@
 ﻿using HW.Core.ValueObjects;
+using System.Collections.Generic;
 
 namespace HW.Core.Entities;
 
 public class User : Account
 {
-    public FullName FullName { get; private set; } = null!;
+    private readonly List<Order> _ordersAsCreator = [];
+
+    public FullName FullName { get; private set; }
+
     public string? Description { get; private set; }
-    public string? AvatarPath { get; private set; }
+
+    public Image? AvatarImage { get; private set; }
+
+    public IReadOnlyCollection<Order> OrdersAsCreator => _ordersAsCreator;
 
     private User(
         Email email,

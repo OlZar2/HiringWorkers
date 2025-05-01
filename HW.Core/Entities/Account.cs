@@ -4,10 +4,21 @@ namespace HW.Core.Entities;
 
 public class Account
 {
+    private readonly List<Order> _ordersAsExecutor = [];
+
+    private readonly List<Order> _ordersAsCandidate = [];
+
     public Guid Id { get; protected set; }
-    public Email Email { get; protected set; } = null!;
-    public PhoneNumber PhoneNumber { get; protected set; } = null!;
-    public string PasswordHash { get; protected set; } = null!;
+
+    public Email Email { get; protected set; }
+
+    public PhoneNumber PhoneNumber { get; protected set; }
+
+    public string PasswordHash { get; protected set; }
+
+    public IReadOnlyCollection<Order> OrdersAsExecutor => _ordersAsExecutor;
+
+    public IReadOnlyCollection<Order> OrdersAsCandidate => _ordersAsCandidate;
 
     protected Account(
         Email email,

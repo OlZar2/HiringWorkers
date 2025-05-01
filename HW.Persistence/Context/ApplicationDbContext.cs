@@ -13,10 +13,15 @@ public class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new AccountConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new CompanyConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+
         base.OnModelCreating(modelBuilder);
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Account> Accounts { get; set; }
-    public DbSet<Company> Companies { get; set; }
+    public DbSet<Account> Accounts { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Company> Companies { get; set; } = null!;
+    public DbSet<Profession> Proffesions { get; set; } = null!;
+    public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
 }

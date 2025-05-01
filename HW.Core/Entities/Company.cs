@@ -4,9 +4,11 @@ namespace HW.Core.Entities;
 
 public class Company : Account
 {
-    public string CompanyName { get; private set; } = null!;
+    public string CompanyName { get; private set; }
+
     public string? Description { get; private set; }
-    public string? AvatarPath { get; private set; }
+
+    public Image? AvatarImage { get; private set; }
 
     private Company(
         Email email,
@@ -31,8 +33,9 @@ public class Company : Account
         return new Company(
             email,
             phoneNumber,
-            companyName,
-            passwordHash);
+            passwordHash,
+            companyName
+        );
     }
 
     public void UpdateDescription(string description) => Description = description;
